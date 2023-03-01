@@ -1,24 +1,32 @@
-// http://api.giphy.com/v1/gifs/search?q=${inputValue}&api_key=MhAodEJIJxQMxW9XqxKjyXfNYdLoOIym
+"use strict";
+const API_KEY = "MhAodEJIJxQMxW9XqxKjyXfNYdLoOIym";
+const URL_GIPHY = `http://api.giphy.com/v1/gifs/search`
 
-// get form input value
-// dig thru for img
-
+/** gets a gif from the giphy API */
 async function getGiphy(evt) {
     evt.preventDefault();
-    let urlGiphy = `http://api.giphy.com/v1/gifs/search?q=${getInput()}&api_key=MhAodEJIJxQMxW9XqxKjyXfNYdLoOIym`;
-    let giphy = await axios.get(urlGiphy);
+    let formInput = getInput();
+    let queryParams = {params:{api_key:API_KEY,q:formInput}};
+    let giphyResponse = await axios.get(URL_GIPHY, queryParams);
     
-    addGiphy(giphy.data.data[0].images.original.url);
+    addGiphy(giphyResponse.data.data[0].images.original.url);
 }
 
+/** adds a giphy gif to the page */
 async function addGiphy(url) {
-    let addUrl = `<img src=${url}>`
+    let addUrl = `<img src="${url}">`;
     $("#giphy-container").append(addUrl);
 }
 
+/** returns the user's form input */
 function getInput() {
-    return inputValue = $('#form-input').val();
+    return $('#form-input').val();
 }
 
+/** removes all giphy gifs from the page */
+function removeGiphys(evt) {
+    evt.preventDefault();
+    $('#giphy-container').empty();
+}
 $("#search-button").on('click', getGiphy);
-
+$("#remove-button").on('click', removeGiphys);
